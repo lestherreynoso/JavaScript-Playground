@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Javascript Playground</title>
+        <!-- Bootstrap -->
+        <link href="bootstrap.min.css" rel="stylesheet">
+
+        <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jquery-1.11.1.min.js"></script>
+        <script src="bootstrap.min.js"></script>
+		
+        <style>
+        body{
+        	background-color: lightblue;
+        }
+        </style>
+
+        <script>
+
+	    	$(document).ready(function(){
+
+	  // 			$(".panel").click(function(){
+	  //   			$(this).hide();
+	  //   			// $(this).append("you are hovering");
+	  // 			});
+					
+					// $("#radiusChange").hide()
+					// $("#makeBall").click(function(){
+					// 	$("#radiusChange").fadeIn();
+					// });
+
+					
+			});
+        </script>
+
+		<script type="text/javascript">
+			window.addEventListener("load", canvases, false);
+
+			var person = {
+				firstname: "lesther",
+				lastname: "reynoso",
+				status: "awesome"
+			};
+
+
+
+
+			function awesomeness(){
+
+				document.getElementById("demo").innerHTML = "hi " + person.firstname + " " + person.lastname + " is " + person.status;
+			}
+
+			function canvases(){
+				var leftcanvas = document.getElementById("leftcanvas");
+				var rightcanvas = document.getElementById("rightcanvas");
+				var leftctx = leftcanvas.getContext("2d");
+				var rightctx = rightcanvas.getContext("2d");
+
+				var things = {
+					balls: [],
+					boxes: []
+				};
+
+				var radius = 0;
+				var circlePosition = {
+					x: 250,
+					y: 250
+				};
+				var cvs = leftctx;
+				var obj = ball;
+
+
+				document.getElementById("makeBall").addEventListener("click", makeBall, false);
+				document.getElementById("radius").addEventListener("change", setRadius, false);
+				document.getElementById("canvasSelection").addEventListener("change", setCanvas, false);
+				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
+				drawscreen();
+
+				function setRadius(e){
+					radius = e.target.value;
+					drawscreen();
+				}
+
+				function setCanvas(e){
+					if (e.target.value == "leftctx")
+						cvs = leftctx;
+					else if (e.target.value == "rightctx")
+						cvs = rightctx;
+
+					drawscreen();
+				}
+
+				function makeBall(){
+						radius = 25;
+						drawscreen();
+					}
+
+				function ball(position, size){
+						this.position.x = position.x;
+						this.position.y = position.y;
+						this.size =  size;
+					}
+				function chooseObject(e){
+					obj = e.target.value;
+					drawscreen();
+				}
+
+				function drawCircle(context, x, y, radius){
+					context.beginPath();
+					context.strokeStyle = "black";
+					context.fillStyle = "black";
+					context.lineWidth = 5;
+					context.arc(x, y, radius, (Math.PI/180)*0, (Math.PI/180)*360, false);
+					context.stroke();
+					context.fill();
+					context.closePath();
+				}
+
+				function drawThings(){
+					for (var t in things.balls) {
+						drawCircle(cvs, ball.position.x, ball.position.y, ball.size);
+					}
+				}
+
+				function drawscreen(){
+					//background for left canvas
+					leftctx.fillStyle = "#ff0000";
+					leftctx.fillRect(0, 0, 500, 500);
+					//background for right canvas
+
+					rightctx.fillStyle = "#0000ff";
+					rightctx.fillRect(0, 0, 500, 500);
+
+					drawCircle(cvs, circlePosition.x, circlePosition.y, radius);
+
+				}
+
+
+			}
+
+
+		</script>
+
+	</head>
+
+	<body>
+
+		<h1>Javascript Playground!!</h1>
+
+		<p id="demo">My First Paragraph</p>
+		<button onclick="awesomeness()"> Change the paragraph!</button>
+		<br><br>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Make a circle!
+						</div>
+						<div class="panel-body">
+							<p>
+								Make an object and modify that its objects properties. 
+							</p>
+							<br> Which Object?
+							<select id="objectSelection">
+								<option value="ball">ball</option>
+								<option value="box">box</option>
+							</select>
+							<br> Which Canvas?
+							<select id="canvasSelection">
+								<option value="leftctx">left</option>
+								<option value="rightctx">right</option>
+							</select>
+
+							<div class="btn btn-default" id="makeBall">
+								Make it!
+							</div>
+							<br>
+							Positon: 
+							<br>X:<input type="text" name="objx">  
+							<br>Y:<input type="text" name="objy">
+							<br>
+							<span id="radiusChange">
+							Bigger or Smaller!<br>
+							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
+							</span>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Object info
+						</div>
+						<div class="panel-body">
+
+
+							
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Title
+						</div>
+						<div class="panel-body">
+						Body
+						</div>
+					</div>				
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Title
+						</div>
+						<div class="panel-body">
+						Body
+						</div>
+					</div>				
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<canvas id="leftcanvas" width="500" height="500">
+						Left Canvas
+					</canvas>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<canvas id="rightcanvas" width="500" height="500">
+						Right Canvas
+					</canvas>
+				</div>
+			</div>
+
+
+		</div>
+
+	</body>
+</html>
