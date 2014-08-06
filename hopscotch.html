@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Hopscotch</title>
+        <!-- Bootstrap -->
+        <link href="bootstrap.min.css" rel="stylesheet">
+
+        <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="jquery-1.11.1.min.js"></script>
+        <script src="bootstrap.min.js"></script>
+		
+        <style>
+        body{
+        	background-color: lightblue;
+        }
+        </style>
+
+        <script>
+
+	    	$(document).ready(function(){
+
+					
+			});
+        </script>
+
+		<script type="text/javascript">
+			window.addEventListener("load", canvas, false);
+
+			function canvas(){
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				// canvas.width = document.getElementById("myContainer").style.width;
+				// alert(document.getElementById("myContainer").style.min-width);
+				
+
+				var btns = {
+					yes: {
+						color 	: "green",
+						x 		: (canvas.width/3)*0.5, 
+						y 		: canvas.height/2, 
+						width 	: 250, 
+						height	: 100, 
+						text  	: "YES!!"
+					},
+
+ 					no:  {
+ 						color 	: "red", 
+ 						x 		: (canvas.width/3)*1.5, 
+ 						y 		: canvas.height/2, 
+ 						width 	: 250, 
+ 						height 	: 100,
+ 						text 	: "NO!!"
+ 					}
+				};
+
+				var tiles = {
+					one		: 1 ,
+					two 	: 2 ,
+					three	: 3 ,
+					four	: 4 ,
+					five	: 5 ,
+					six		: 6 ,
+					seven	: 7 ,
+					eight	: 8 ,
+					nine	: 9 ,
+					ten		: 10 
+				};
+
+				drawscreen();
+				introScreen();
+
+				function introScreen(){
+					ctx.font = "50px serif";
+					ctx.fillStyle = "black";
+					var textWidth = ctx.measureText("Welcome! Do you want to play Hopscotch?").width;
+					ctx.fillText ("Welcome! Do you want to play Hopscotch?", (canvas.width/2 )- (textWidth /2), canvas.height/3 );
+
+				}
+
+				function drawbtns(){
+					console.log(btns.yes.color);
+					for (b in btns){
+						ctx.fillStyle = btns[b].color;
+						ctx.fillRect(btns[b].x, btns[b].y - btns[b].height/2, btns[b].width, btns[b].height);
+
+
+						ctx.font = "30px serif";
+						ctx.fillStyle = "black"
+						tWidth = ctx.measureText(btns[b].text).width;
+						ctx.fillText(btns[b].text, (btns[b].x) + (tWidth), btns[b].y);
+					}
+				}
+
+				function drawscreen(){
+
+					ctx.fillStyle = "white";
+					ctx.fillRect(0, 0, 1000, 1000);
+
+					drawbtns()
+				}
+			}
+
+
+		</script>
+
+	</head>
+
+	<body>
+
+		<h1><span class="label label-danger">EXTREME</span><span class="label label-warning">Hopscotch!</span></h1>
+		<h2>As Requested by Cherese</h2>
+
+
+
+			<div class="container" id="myContainer">
+					<div class="panel">
+						<div class="panel-body">
+							<h2>My pseudoCode!</h2>
+							<p>
+								What id like in this game is simple, two power meters, rather one power meter and one horizonal meter. 
+								values from 1 to 100 for each and i'll scale the width to 1 to 100 as well, or -50 to 50 or the actual dimensions or whatevr
+								have grenades or bombs be the thrown object and mines on the floor and safe point circles. 
+								I want to generate (number of position) * 2 mines, so if on 1 two mine and on 4  8 mines etc. and generate safezones in reverse count 
+								as in 10 for 1 9 for 2 etc. tosing it is one part of the game but another is hopping to it idk how to incorporate that one yet 
+								.. we'll deal with that after all this is functioning. 
+							</p>
+						</div>
+					</div>
+					<canvas id="canvas" width="1000" height="1000">
+						Left Canvas
+					</canvas>
+				</div>
+
+	</body>
+</html>

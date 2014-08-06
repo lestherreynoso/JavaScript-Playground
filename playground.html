@@ -65,27 +65,26 @@
 				};
 
 				var radius = 25;
-				var circlePosition = {
-					x: 250,
-					y: 250
-				};
+
 				var cvs = leftctx;
 				var obj = {
-					x: getCanvas().width,
-					y: getCanvas().height
+					objname	: 	"ball1",
+					x 		: 	getCanvas().width/2,
+					y 		: 	getCanvas().height/2
 				};
 				var fillorstroke = "fill";
 				var fillColor = "black";
 				var strokeColor = "black";
 
 
-				document.getElementById("makeBall").addEventListener("click", makeBall, false);
+				document.getElementById("makeObj").addEventListener("click", makeBall, false);
+				document.getElementById("nameObj").addEventListener("click", nameObj, false);
 				document.getElementById("radius").addEventListener("change", setRadius, false);
 				document.getElementById("canvasSelection").addEventListener("change", setCanvas, false);
 				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
 				document.getElementById("fillorstroke").addEventListener("change", setFillorstroke, false);
-				document.getElementById("objx").addEventListener("change", setPositionX, false);
-				document.getElementById("objy").addEventListener("change", setPositionY, false);
+				document.getElementById("objx").addEventListener("keyup", setPosition, false);
+				document.getElementById("objy").addEventListener("keyup", setPosition, false);
 				drawscreen();
 
 				
@@ -98,16 +97,17 @@
 					drawscreen();
 				}
 
-				function setPositionX(e){
-					obj.x = e.target.value;
+				function setPosition(e){
+					if (e.target.id == "objx"){
+						obj.x = e.target.value;
+					}
+					else if (e.target.id == "objy"){
+						obj.y = e.target.value;
+					}
 					drawscreen();
+					// alert("called " +  e.target.id + "X= " + obj.x + "Y= "+ obj.y);
 				}
 
-				function setPositionY(e){
-					obj.y = e.target.value;
-					drawscreen();
-				}
-				
 
 				function setCanvas(e){
 					if (e.target.value == "leftctx")
@@ -125,11 +125,11 @@
 // CONTSTRUCTORS																									  	  *
 //*************************************************************************************************************************
 
-				function ball(x, y, size){
+				function ball(cvs, x, y, size){
+					this.ctx = cvs;
 					this.x = x;
 					this.y = y;
 					this.size =  size;
-					this.ctx = cvs;
 					console.log(cvs);
 				}
 				function box(x, y, width, height){
@@ -151,7 +151,7 @@
 				}
 
 				function makeBall(){
-					things.balls.push(new ball( (getCanvas().width/2), (getCanvas().height/2), radius));
+					things.balls.push(new ball(cvs, obj.x, obj.y, radius));
 					console.log(things);
 					drawscreen();
 				}
@@ -243,16 +243,21 @@
 								<option value="rightctx">right</option>
 							</select>
 
-							<div class="btn btn-default" id="makeBall">
+							<div class="btn btn-default" id="makeObj">
 								Make it!
 							</div>
+							<br>  
+							
+							<div class="btn btn-success" id="nameObj">Name IT! <input tupe="text" id="objname" placeholder="ballicious"></div>
+
 							<br>
-							<form name="position">
-								Positon: 
-								<br>X:<input type="text" id="objx" placeholder= "250">  
-								<br>Y:<input type="text" id="objy" placeholder= "250">
-								<br>
-							</form>
+							Positon: 
+							<br>X:<input type="text" id="objx" placeholder= "250">  
+							<br>Y:<input type="text" id="objy" placeholder= "250">
+							<br>
+							<input type="radio" name="positionMode" value="manual" checked>Manual entry
+							<input type="radio" name="positionMode" value="click">Click to position
+							<br>
 							<span id="radiusChange">
 							Bigger or Smaller!<br>
 							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
@@ -270,9 +275,25 @@
 				<div class="col-lg-3 col-md-3 col-sm-3">
 					<div class="panel panel-danger">
 						<div class="panel-heading">
-						Object info
+							Object info
 						</div>
 						<div class="panel-body">
+							You made too many!
+							<div class="btn-group">
+						<button type="button" class="btn btn-default">1</button>
+							<button type="button" class="btn btn-default">2</button>
+
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									Dropdown
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#">Dropdown link</a></li>
+									<li><a href="#">Dropdown link</a></li>
+								</ul>
+							</div>
+						</div>
 
 
 							
