@@ -64,45 +64,99 @@
 					boxes: []
 				};
 
-				var radius = 0;
+				var radius = 25;
 				var circlePosition = {
 					x: 250,
 					y: 250
 				};
 				var cvs = leftctx;
-				var obj = ball;
+				var obj = {
+					x: getCanvas().width,
+					y: getCanvas().height
+				};
+				var fillorstroke = "fill";
+				var fillColor = "black";
+				var strokeColor = "black";
 
 
 				document.getElementById("makeBall").addEventListener("click", makeBall, false);
 				document.getElementById("radius").addEventListener("change", setRadius, false);
 				document.getElementById("canvasSelection").addEventListener("change", setCanvas, false);
 				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
+				document.getElementById("fillorstroke").addEventListener("change", setFillorstroke, false);
+				document.getElementById("objx").addEventListener("change", setPositionX, false);
+				document.getElementById("objy").addEventListener("change", setPositionY, false);
 				drawscreen();
 
+				
+//*************************************************************************************************************************
+// EVENT TRIGGERED																										  *
+//*************************************************************************************************************************
+
 				function setRadius(e){
-					radius = e.target.value;
+					things.balls[0].size = e.target.value;
 					drawscreen();
 				}
+
+				function setPositionX(e){
+					obj.x = e.target.value;
+					drawscreen();
+				}
+
+				function setPositionY(e){
+					obj.y = e.target.value;
+					drawscreen();
+				}
+				
 
 				function setCanvas(e){
 					if (e.target.value == "leftctx")
 						cvs = leftctx;
 					else if (e.target.value == "rightctx")
 						cvs = rightctx;
-
+					console.log(cvs);
 					drawscreen();
+				}
+				function setFillorstroke(e){
+					fillorstroke = e.target.value;
+					drawscreen();
+				}
+//*************************************************************************************************************************
+// CONTSTRUCTORS																									  	  *
+//*************************************************************************************************************************
+
+				function ball(x, y, size){
+					this.x = x;
+					this.y = y;
+					this.size =  size;
+					this.ctx = cvs;
+					console.log(cvs);
+				}
+				function box(x, y, width, height){
+					this.position.x = x;
+					this.position.y = y;
+					this.size.width = width;
+					this.size.height =  height;
+				}
+
+//*************************************************************************************************************************
+// DRAWING TO SCREEN 																								  	  *
+//*************************************************************************************************************************
+
+				function getCanvas(){
+					if (cvs = leftctx)
+						return leftcanvas;
+					else if (cvs == rightctx)
+						return rightcanvas;
 				}
 
 				function makeBall(){
-						radius = 25;
-						drawscreen();
-					}
+					things.balls.push(new ball( (getCanvas().width/2), (getCanvas().height/2), radius));
+					console.log(things);
+					drawscreen();
+				}
 
-				function ball(position, size){
-						this.position.x = position.x;
-						this.position.y = position.y;
-						this.size =  size;
-					}
+	
 				function chooseObject(e){
 					obj = e.target.value;
 					drawscreen();
@@ -110,18 +164,29 @@
 
 				function drawCircle(context, x, y, radius){
 					context.beginPath();
-					context.strokeStyle = "black";
-					context.fillStyle = "black";
-					context.lineWidth = 5;
-					context.arc(x, y, radius, (Math.PI/180)*0, (Math.PI/180)*360, false);
-					context.stroke();
-					context.fill();
+					// context.lineWidth = 5;
+					context.arc(x, y, radius, (Math.PI/180)*0, (Math.PI/180)*360, false);		
 					context.closePath();
+					if (fillorstroke == "fill"){
+						context.fillStyle = fillColor;
+						context.fill();
+					}
+					else if (fillorstroke == "stroke"){
+						context.strokeStyle = strokeColor;
+						context.stroke();
+					}
+					else if (fillorstroke == "both"){
+						context.fillStyle = fillColor;
+						context.fill();
+						context.strokeStyle = strokeColor;
+						context.stroke();
+					}
 				}
 
 				function drawThings(){
 					for (var t in things.balls) {
-						drawCircle(cvs, ball.position.x, ball.position.y, ball.size);
+						drawCircle(things.balls[t].ctx, things.balls[t].x, things.balls[t].y, things.balls[t].size);
+
 					}
 				}
 
@@ -134,7 +199,9 @@
 					rightctx.fillStyle = "#0000ff";
 					rightctx.fillRect(0, 0, 500, 500);
 
-					drawCircle(cvs, circlePosition.x, circlePosition.y, radius);
+					// drawCircle(cvs, circlePosition.x, circlePosition.y, radius);
+					drawThings();
+
 
 				}
 
@@ -180,15 +247,23 @@
 								Make it!
 							</div>
 							<br>
-							Positon: 
-							<br>X:<input type="text" name="objx">  
-							<br>Y:<input type="text" name="objy">
-							<br>
+							<form name="position">
+								Positon: 
+								<br>X:<input type="text" id="objx" placeholder= "250">  
+								<br>Y:<input type="text" id="objy" placeholder= "250">
+								<br>
+							</form>
 							<span id="radiusChange">
 							Bigger or Smaller!<br>
 							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
 							</span>
-
+							<br>
+							Fill or Stroke or both?
+							<select id="fillorstroke">
+								<option value = "fill">Fill</option>
+								<option value = "stroke">Stroke</option>
+								<option value = "both">Both</option>
+							</select>
 						</div>
 					</div>
 				</div>
