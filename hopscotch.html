@@ -34,7 +34,7 @@
 				var ctx = canvas.getContext("2d");
 				// canvas.width = document.getElementById("myContainer").style.width;
 				// alert(document.getElementById("myContainer").style.min-width);
-				
+				canvas.addEventListener("mousedown", getPosition, false);
 
 				var btns = {
 					yes: {
@@ -72,6 +72,41 @@
 				drawscreen();
 				introScreen();
 
+				function getPosition(e){
+					var x = e.pageX - canvas.offsetLeft;
+					var y = e.pageY - canvas.offsetTop;
+
+					// checkClickedObjects(x, y);
+				}
+
+				// function checkClickedObjects(x, y){
+				// 	for (b in btns){
+				// 		if ((x >= btns[b].x || x <= btns[b].x + btns[b].width) || (y >= btns[b].y || y <= btns[b].y + btns[b].height)){
+				// 			var tempbtn = btns[b]
+				// 		}
+				// 	}
+				// 	if (tempbtn == btns.yes){
+				// 		startGame();
+				// 	}
+				// 	else if (tempbtn == btns.no){
+				// 		// beSad();
+				// 		console.log( tempbtn);
+				// 	}
+				// }
+
+				function startGame(){
+					ctx.fillStyle = "white";
+					ctx.fillRect(0, 0, 1000, 1000);
+				}
+
+				function setupBoard(){
+					cw = canvas.width;
+					ch = canvas.height;
+					for (num in tiles){
+						
+					}
+				}
+
 				function introScreen(){
 					ctx.font = "50px serif";
 					ctx.fillStyle = "black";
@@ -80,19 +115,20 @@
 
 				}
 
-				function drawbtns(){
-					console.log(btns.yes.color);
-					for (b in btns){
-						ctx.fillStyle = btns[b].color;
-						ctx.fillRect(btns[b].x, btns[b].y - btns[b].height/2, btns[b].width, btns[b].height);
+
+				// function drawbtns(){
+				// 	console.log(btns.yes.color);
+				// 	for (b in btns){
+				// 		ctx.fillStyle = btns[b].color;
+				// 		ctx.fillRect(btns[b].x, btns[b].y - btns[b].height/2, btns[b].width, btns[b].height);
 
 
-						ctx.font = "30px serif";
-						ctx.fillStyle = "black"
-						tWidth = ctx.measureText(btns[b].text).width;
-						ctx.fillText(btns[b].text, (btns[b].x) + (tWidth), btns[b].y);
-					}
-				}
+				// 		ctx.font = "30px serif";
+				// 		ctx.fillStyle = "black"
+				// 		tWidth = ctx.measureText(btns[b].text).width;
+				// 		ctx.fillText(btns[b].text, (btns[b].x) + (tWidth), btns[b].y);
+				// 	}
+				// }
 
 				function drawscreen(){
 
