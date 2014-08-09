@@ -11,6 +11,8 @@
         <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="jquery-1.11.1.min.js"></script>
         <script src="bootstrap.min.js"></script>
+        <script type="text/javascript" src="jscolor.js"></script>
+
 		
         <style>
         body{
@@ -69,13 +71,14 @@
 				var cvs = leftctx;
 				var obj = {
 					name	: 	"ball1",
+					type	: 	"ball", 
 					x 		: 	getCanvas().width/2,
 					y 		: 	getCanvas().height/2
 				};
 				var fillorstroke = "fill";
 				var fillColor = "black";
 				var strokeColor = "black";
-
+				var mouseIsDown = false;
 
 				document.getElementById("makeObj").addEventListener("click", makeBall, false);
 				document.getElementById("makeObj").addEventListener("click", addBtns, false);
@@ -87,6 +90,13 @@
 				document.getElementById("objname").addEventListener("change", setObjName, false);
 				document.getElementById("objx").addEventListener("keyup", setPosition, false);
 				document.getElementById("objy").addEventListener("keyup", setPosition, false);
+
+				document.getElementById("fillColor").addEventListener("change", setFillColor, false);
+				document.getElementById("strokeColor").addEventListener("change", setStrokeColor, false);
+
+				// leftcanvas.addEventListener("click", mouseClicked, false);
+				// rightcanvas.addEventListener("click", mouseClicked, false);
+
 				drawscreen();
 
 				
@@ -110,6 +120,16 @@
 					// alert("called " +  e.target.id + "X= " + obj.x + "Y= "+ obj.y);
 				}
 
+				function setFillColor(e){
+					fillColor = "#" + e.target.value;
+					drawscreen();
+				}
+
+				function setStrokeColor(e){
+					strokeColor = "#" + e.target.value;
+					drawscreen();
+				}
+
 				function setCanvas(e){
 					if (e.target.value == "leftctx")
 						cvs = leftctx;
@@ -130,19 +150,111 @@
 				}
 
 				function chooseObject(e){
-					obj = e.target.value;
+					obj.type = e.target.value;
 					drawscreen();
 				}
+				// function mouseClicked(e){
+				// 	if (e.target.id == "leftcanvas"){
+				// 		var x = e.layerX - leftcanvas.offsetLeft;
+				// 		var y = e.layerY - leftcanvas.offsetTop;
+				// 	}
+				// 	else if (e.target.id == "rightcanvas"){
+				// 		var x = e.layerX - rightcanvas.offsetLeft;
+				// 		var y = e.layerY - rightcanvas.offsetTop;
+				// 	}
+
+				// 	objectClickedCheck(x, y);
+				// 	console.log(x + " " + y + " " + e.target.id);
+				// }
+
+
+				// function objectClickedCheck(x, y){
+					// for (i in things.balls){
+					// 	a = x;
+					// 	b = y;
+					// 	c = things.balls[i].x;
+					// 	d = things.balls[i].y;
+					// 	r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
+					// 	R = Math.pow(things.balls[i].size, 2);
+					// 	if (r<=R){
+					// 		console.log("object hit " + things.balls[i].name);
+					// 		updatePosition(things.balls[i]);
+					// 		break;
+					// 	}
+					// 	else {
+					// 		console.log("no object hit");
+					// 	}
+					// }
+				// }
+
+				// function updatePosition(obj){
+				// 	leftcanvas.onmousedown = function (){
+				// 		mousex = 
+				// 		mousey
+				// 	}
+				// }
+				leftcanvas.onmousedown = function(e){
+					mouseIsDown = true;
+					mousex = e.layerX;
+					mousey = e.layerY;
+					for (i in things.balls){
+						a = mousex;
+						b = mousey;
+						c = things.balls[i].x;
+						d = things.balls[i].y;
+						r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
+						R = Math.pow(things.balls[i].size, 2);
+						if (r<=R){
+							console.log("object hit " + things.balls[i].name);
+							things.balls.target = things.balls[i];
+							break;
+						}
+						else {
+							console.log("no object hit");
+						}
+					}
+				}
+
+				leftcanvas.onmousemove = function(e){
+					mousex = e.layerX;
+					mousey = e.layerY;
+					if(mouseIsDown){
+						things.balls.target.x = mousex;
+						things.balls.target.y = mousey;
+					}
+					drawscreen();
+				}
+				leftcanvas.onmouseup = function (e){
+					mouseIsDown = false;
+				}
+
 
 				function addBtns(){
-					for (o in things.balls){
-						group = document.getElementById("objGroup");
+						
+					btngroup = document.createElement("div");
+					btngroup.setAttribute("class", "btn-group");								
 						btn = document.createElement("button");
-						btn.setAttribute("class", "btn btn-default dropdown-toggle");
-						btn.setAttribute("data-toggle","dropdown");
-						btn.innerHTML = things.balls[o].name;
-						group.appendChild(btn);
+						btn.setAttribute("class", "btn btn-default");
+							btn.innerHTML = obj.name;
+					btngroup.appendChild(btn);
+
+					if (obj.type == "ball"){	
+						ballbtns = document.getElementById("ballbtns");
+						ballbtns.appendChild(btngroup);
 					}
+					else if (obj.type == "box"){
+						boxbtns = document.getElementById("boxbtns");
+						boxbtns.appendChild(btngroup);
+					}
+				}
+
+				function makeBtnMenu(btnmenu){
+
+					btnmenu.setAttribute("class", "dropdown-menu");
+					li = document.createElement("li");
+					li.innerHTML = "I made it this far";
+					btnmenu.appendChild(li);
+					
 				}
 //*************************************************************************************************************************
 // CONTSTRUCTORS																									  	  *
@@ -242,12 +354,55 @@
 		<button onclick="awesomeness()"> Change the paragraph!</button>
 		<br><br>
 
-		<div class="container">
+		<div class="container-fluid">
+			<div class="row">
+				
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							Object Selector
+						</div>
+						<div class="panel-body">
+							You made too many!
+							<div id="objGroup">
+								<div class="btn-toolbar" id="ballbtns">
+
+								</div>
+								<div class="btn-toolbar" id="boxbtns">
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Title
+						</div>
+						<div class="panel-body">
+						Body
+						</div>
+					</div>				
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Hopscotch
+						</div>
+						<div class="panel-body">
+						<a href="hopscotch.html">Play hopscotch?</a>
+						</div>
+					</div>				
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-lg-3 col-md-3 col-sm-3">
 					<div class="panel panel-danger">
 						<div class="panel-heading">
-						Make a circle!
+						Make an object!
 						</div>
 						<div class="panel-body">
 							<p>
@@ -290,70 +445,23 @@
 								<option value = "stroke">Stroke</option>
 								<option value = "both">Both</option>
 							</select>
+							<br>
+							Choose fill color: <input class="color" id="fillColor" value="000000">
+							<br>
+							Choose stroke color: <input class="color" id="strokeColor" value="000000">
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
-						<div class="panel-heading">
-							Object info
-						</div>
-						<div class="panel-body">
-							You made too many!
-							<div class="btn-group">
-								<button type="button" class="btn btn-default">1</button>
-								<button type="button" class="btn btn-default">2</button>
-
-								<div class="btn-group" id="objGroup">
-									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-									Dropdown
-									<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-										<li><a href="#">Dropdown link</a></li>
-										<li><a href="#">Dropdown link</a></li>
-									</ul>
-								</div>
-							</div>
-
-
-							
-						</div>
+					<div class="col-lg-4 col-md-4 col-sm-4">
+						<canvas id="leftcanvas" width="500" height="500">
+							Left Canvas
+						</canvas>
 					</div>
-				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
-						<div class="panel-heading">
-						Title
-						</div>
-						<div class="panel-body">
-						Body
-						</div>
-					</div>				
-				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
-						<div class="panel-heading">
-						Hopscotch
-						</div>
-						<div class="panel-body">
-						<a href="hopscotch.html">Play hopscotch?</a>
-						</div>
-					</div>				
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-6">
-					<canvas id="leftcanvas" width="500" height="500">
-						Left Canvas
-					</canvas>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6">
-					<canvas id="rightcanvas" width="500" height="500">
-						Right Canvas
-					</canvas>
-				</div>
+					<div class="col-lg-4 col-md-4 col-sm-4">
+						<canvas id="rightcanvas" width="500" height="500">
+							Right Canvas
+						</canvas>
+					</div>
 			</div>
 
 

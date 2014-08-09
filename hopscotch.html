@@ -70,7 +70,7 @@
 				};
 
 				drawscreen();
-				introScreen();
+				// introScreen();
 
 				function getPosition(e){
 					var x = e.pageX - canvas.offsetLeft;
@@ -134,8 +134,47 @@
 
 					ctx.fillStyle = "white";
 					ctx.fillRect(0, 0, 1000, 1000);
+					// drawbox(500,500,250,250);
+					// drawbtns();
+					drawGrid();
+					drawMap();
+				}
+				function drawGrid(){
+					ctx.strokeStyle = "blue";
+					ctx.beginPath();
+					ctx.moveTo(canvas.width/2, 0);
+					ctx.lineTo(canvas.width/2, canvas.height);
+					ctx.moveTo(0, canvas.height/2);
+					ctx.lineTo(canvas.width, canvas.height/2);
+					ctx.stroke();
+					ctx.closePath();
+				}
+				function drawMap(){
+					for (x in tiles){
+						if (tiles[x] == 4 || tiles[x]== 7){
+							drawbox(canvas.width/2 - canvas.width/10, (canvas.height/10)*4, canvas.width/10, canvas.height/10)
+						}
+						if (tiles[x] == 5 || tiles[x]== 8){
+							drawbox(canvas.width/2, (canvas.height/10)*6, canvas.width/10, canvas.height/10)
 
-					drawbtns()
+						}
+						else {
+							drawbox(canvas.width/2 - canvas.width/20, (canvas.height/10)*tiles[x], canvas.width/10, canvas.height/10);
+						}
+						ctx.font = "50px serif";
+						ctx.fillStyle = "black";
+						// var textWidth = (ctx.measureText(tiles[x]).width)/2;
+						ctx.fillText(tiles[x], canvas.width/2, (canvas.height/10)*(11-tiles[x]));
+
+					}
+
+				}
+
+				function drawbox(x, y, w, h){
+
+
+					ctx.strokeStyle = "black";
+					ctx.strokeRect(x,y,w,h);
 				}
 			}
 
@@ -147,7 +186,7 @@
 	<body>
 
 		<h1><span class="label label-danger">EXTREME</span><span class="label label-warning">Hopscotch!</span></h1>
-		<h2>As Requested by Cherese</h2>
+		<h2>As Requested..</h2>
 
 
 
@@ -155,6 +194,7 @@
 					<div class="panel">
 						<div class="panel-body">
 							<h2>My pseudoCode!</h2>
+							<h3>(i know its not really pseudocode)</h3>
 							<p>
 								What id like in this game is simple, two power meters, rather one power meter and one horizonal meter. 
 								values from 1 to 100 for each and i'll scale the width to 1 to 100 as well, or -50 to 50 or the actual dimensions or whatevr
