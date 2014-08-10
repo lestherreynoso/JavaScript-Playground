@@ -6,12 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Javascript Playground</title>
         <!-- Bootstrap -->
-        <link href="bootstrap.min.css" rel="stylesheet">
+        <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
 
         <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="jquery-1.11.1.min.js"></script>
-        <script src="bootstrap.min.js"></script>
-        <script type="text/javascript" src="jscolor.js"></script>
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <script src="bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="jscolor/jscolor.js"></script>
 
 		
         <style>
@@ -67,18 +67,19 @@
 				};
 
 				var radius = 25;
-				var selectedObj = 0;
+				var selectedObj;
 				var cvs = leftctx;
 				var obj = {
 					name	: 	"ball1",
 					type	: 	"ball", 
 					x 		: 	getCanvas().width/2,
 					y 		: 	getCanvas().height/2
-				};
+				}; 
 				var fillorstroke = "fill";
 				var fillColor = "black";
 				var strokeColor = "black";
 				var mouseIsDown = false;
+				var objectsExist = false;
 
 				document.getElementById("makeObj").addEventListener("click", makeBall, false);
 				document.getElementById("makeObj").addEventListener("click", addBtns, false);
@@ -94,9 +95,6 @@
 				document.getElementById("fillColor").addEventListener("change", setFillColor, false);
 				document.getElementById("strokeColor").addEventListener("change", setStrokeColor, false);
 
-				// leftcanvas.addEventListener("click", mouseClicked, false);
-				// rightcanvas.addEventListener("click", mouseClicked, false);
-
 				drawscreen();
 
 				
@@ -105,28 +103,28 @@
 //*************************************************************************************************************************
 
 				function setRadius(e){
-					things.balls[selectedObj].size = e.target.value;
+					selectedObj.size = e.target.value;
 					drawscreen();
 				}
 
 				function setPosition(e){
 					if (e.target.id == "objx"){
-						obj.x = e.target.value;
+						selectedObj.x = e.target.value;
 					}
 					else if (e.target.id == "objy"){
-						obj.y = e.target.value;
+						selectedObj.y = e.target.value;
 					}
 					drawscreen();
 					// alert("called " +  e.target.id + "X= " + obj.x + "Y= "+ obj.y);
 				}
 
 				function setFillColor(e){
-					fillColor = "#" + e.target.value;
+					selectedObj.fillColor = "#" + e.target.value;
 					drawscreen();
 				}
 
 				function setStrokeColor(e){
-					strokeColor = "#" + e.target.value;
+					selectedObj.strokeColor = "#" + e.target.value;
 					drawscreen();
 				}
 
@@ -153,46 +151,7 @@
 					obj.type = e.target.value;
 					drawscreen();
 				}
-				// function mouseClicked(e){
-				// 	if (e.target.id == "leftcanvas"){
-				// 		var x = e.layerX - leftcanvas.offsetLeft;
-				// 		var y = e.layerY - leftcanvas.offsetTop;
-				// 	}
-				// 	else if (e.target.id == "rightcanvas"){
-				// 		var x = e.layerX - rightcanvas.offsetLeft;
-				// 		var y = e.layerY - rightcanvas.offsetTop;
-				// 	}
-
-				// 	objectClickedCheck(x, y);
-				// 	console.log(x + " " + y + " " + e.target.id);
-				// }
-
-
-				// function objectClickedCheck(x, y){
-					// for (i in things.balls){
-					// 	a = x;
-					// 	b = y;
-					// 	c = things.balls[i].x;
-					// 	d = things.balls[i].y;
-					// 	r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
-					// 	R = Math.pow(things.balls[i].size, 2);
-					// 	if (r<=R){
-					// 		console.log("object hit " + things.balls[i].name);
-					// 		updatePosition(things.balls[i]);
-					// 		break;
-					// 	}
-					// 	else {
-					// 		console.log("no object hit");
-					// 	}
-					// }
-				// }
-
-				// function updatePosition(obj){
-				// 	leftcanvas.onmousedown = function (){
-				// 		mousex = 
-				// 		mousey
-				// 	}
-				// }
+		
 				leftcanvas.onmousedown = function(e){
 					mouseIsDown = true;
 					mousex = e.layerX;
@@ -206,7 +165,7 @@
 						R = Math.pow(things.balls[i].size, 2);
 						if (r<=R){
 							console.log("object hit " + things.balls[i].name);
-							things.balls.target = things.balls[i];
+							things.balls.target = selectedObj = things.balls[i];
 							break;
 						}
 						else {
@@ -229,43 +188,20 @@
 				}
 
 
-				function addBtns(){
-						
-					btngroup = document.createElement("div");
-					btngroup.setAttribute("class", "btn-group");								
-						btn = document.createElement("button");
-						btn.setAttribute("class", "btn btn-default");
-							btn.innerHTML = obj.name;
-					btngroup.appendChild(btn);
+			
 
-					if (obj.type == "ball"){	
-						ballbtns = document.getElementById("ballbtns");
-						ballbtns.appendChild(btngroup);
-					}
-					else if (obj.type == "box"){
-						boxbtns = document.getElementById("boxbtns");
-						boxbtns.appendChild(btngroup);
-					}
-				}
-
-				function makeBtnMenu(btnmenu){
-
-					btnmenu.setAttribute("class", "dropdown-menu");
-					li = document.createElement("li");
-					li.innerHTML = "I made it this far";
-					btnmenu.appendChild(li);
-					
-				}
 //*************************************************************************************************************************
 // CONTSTRUCTORS																									  	  *
 //*************************************************************************************************************************
 
-				function ball(cvs, name, x, y, size){
+				function ball(cvs, name, x, y, size, fColor, sColor){
 					this.ctx = cvs;
 					this.name = name;
 					this.x = x;
 					this.y = y;
 					this.size =  size;
+					this.fillColor = fColor;
+					this.strokeColor = sColor;
 					console.log(cvs);
 				}
 				function box(x, y, width, height){
@@ -287,9 +223,13 @@
 				}
 
 				function makeBall(){
-					things.balls.push(new ball(cvs, obj.name, obj.x, obj.y, radius));
+					things.balls.push(new ball(cvs, obj.name, obj.x, obj.y, radius, fillColor, strokeColor));
+					selectedObj = things.balls[things.balls.length-1];
 					console.log(things);
+					console.log(selectedObj);
+					objectsExist = true;
 					drawscreen();
+
 				}
 
 	
@@ -319,8 +259,8 @@
 				function drawThings(){
 					for (var t in things.balls) {
 						drawCircle(things.balls[t].ctx, things.balls[t].x, things.balls[t].y, things.balls[t].size);
-
 					}
+
 				}
 
 				function drawscreen(){
@@ -332,12 +272,44 @@
 					rightctx.fillStyle = "#0000ff";
 					rightctx.fillRect(0, 0, 500, 500);
 
-					// drawCircle(cvs, circlePosition.x, circlePosition.y, radius);
 					drawThings();
+					if (objectsExist){
+						showObjectInfo();
+					}
+				}
 
+				function showObjectInfo(){
+					name = document.getElementById("info-name");
+					type = document.getElementById("info-type");
+					x = document.getElementById("info-x");
+					y = document.getElementById("info-y");
+					size = document.getElementById("info-size");
+					name.innerHTML = selectedObj.name;
+					type.innerHTML = selectedObj.type;
+					x.innerHTML = selectedObj.x;
+					y.innerHTML = selectedObj.y;
+					size.innerHTML = selectedObj.size;
 
 				}
 
+				function addBtns(){
+					
+				btngroup = document.createElement("div");
+				btngroup.setAttribute("class", "btn-group");								
+					btn = document.createElement("button");
+					btn.setAttribute("class", "btn btn-default");
+						btn.innerHTML = obj.name;
+				btngroup.appendChild(btn);
+
+				if (obj.type == "ball"){	
+					ballbtns = document.getElementById("ballbtns");
+					ballbtns.appendChild(btngroup);
+				}
+				else if (obj.type == "box"){
+					boxbtns = document.getElementById("boxbtns");
+					boxbtns.appendChild(btngroup);
+				}
+			}
 
 			}
 
@@ -379,11 +351,17 @@
 				<div class="col-lg-3 col-md-3 col-sm-3">
 					<div class="panel panel-danger">
 						<div class="panel-heading">
-						Title
+						Object Info
 						</div>
 						<div class="panel-body">
-						Body
-						</div>
+	 						<div id="objGroup">
+								Name:<div id="info-name"></div><br>
+								Type:<div id="info-type"></div><br>
+								X:<div id="info-x"></div><br>
+								Y:<div id="info-y"></div><br>
+								Size:<div id="info-size"></div><br>
+	 						</div>
+	 					</div>
 					</div>				
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-3">
