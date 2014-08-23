@@ -1,0 +1,50 @@
+This is going to be structured. 
+
+What do i need/want?
+
+global object representing selected object. 
+modifyable attributes, each attribute globably set to the selected object. 
+all attributes saved to selected object in an array of objects. 
+List of modifyable attributes for the objects 
+
+
+<script>
+
+var centerx = canvas.width/2;
+var centery = canvas.height/2; 
+var showName = true;
+var mouseIsDown = false;
+var objectsExists = false;
+var mouseIsUp = true;
+
+var obj = {
+	name = {
+		text 			: "your text",
+		fontSize 		: "value",  "50",
+		fontFace 		:  "serif",
+		textFillColor 	: "ff0000",
+		textAlpha		: 1,
+		shadowX 		: 1,
+		shadowY			: 1,
+		shadowBlur		:  1,
+		shadowColor		:  "#707070",
+		textBaseline 	: "middle",
+		textAlign 		: "center",
+		fillOrStroke 	: "fill",
+		fontWeight		: "normal",
+		fontStyle 		: "normal",
+		fillType 		: "colorFill",
+		textFillColor2 	: "#000000",
+	},
+	type 		:"circle",
+	xposition	: centerx,
+	yposition	: centery,
+	width		: 50,
+	height		: 50,
+	radius		: 25,
+	fillcolor  	: "green",
+	strokecolor : "orange",
+	fillorstroke: "fill",
+	cvsctx:
+};
+</script>
