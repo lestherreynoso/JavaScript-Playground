@@ -1,50 +1,436 @@
-This is going to be structured. 
+<br>This is going to be structured. 
+<br>
+<br>What do i need/want?
+<br>
+<br>global object representing selected object. 
+<br>modifyable attributes, each attribute globably set to the selected object. 
+<br>all attributes saved to selected object in an array of objects. 
+<br>List of modifyable attributes for the objects 
+<br>
+<br>Object creation completed, successfully created stored and drawn. 
+<br>need to be able to choose selected object. lets start with click to select first
 
-What do i need/want?
+then Object info displaying
+<br>
+<br>IMPORTANT NOTE RECTANGLES/SQUARES ARE DRAWN FROM THE TOP LEFT CORNER BY DEFAULT**
+<br>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Javascript Playground</title>
+        <!-- Bootstrap -->
+        <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
 
-global object representing selected object. 
-modifyable attributes, each attribute globably set to the selected object. 
-all attributes saved to selected object in an array of objects. 
-List of modifyable attributes for the objects 
+        <script  type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <script src="bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="jscolor/jscolor.js"></script>
+
+		
+        <style>
+        body{
+        	background-color: yellow;
+        }
+        </style>
 
 
-<script>
 
-var centerx = canvas.width/2;
-var centery = canvas.height/2; 
-var showName = true;
-var mouseIsDown = false;
-var objectsExists = false;
-var mouseIsUp = true;
 
-var obj = {
-	name = {
-		text 			: "your text",
-		fontSize 		: "value",  "50",
-		fontFace 		:  "serif",
-		textFillColor 	: "ff0000",
-		textAlpha		: 1,
-		shadowX 		: 1,
-		shadowY			: 1,
-		shadowBlur		:  1,
-		shadowColor		:  "#707070",
-		textBaseline 	: "middle",
-		textAlign 		: "center",
-		fillOrStroke 	: "fill",
-		fontWeight		: "normal",
-		fontStyle 		: "normal",
-		fillType 		: "colorFill",
-		textFillColor2 	: "#000000",
-	},
-	type 		:"circle",
-	xposition	: centerx,
-	yposition	: centery,
-	width		: 50,
-	height		: 50,
-	radius		: 25,
-	fillcolor  	: "green",
-	strokecolor : "orange",
-	fillorstroke: "fill",
-	cvsctx:
-};
-</script>
+		<script>
+			window.addEventListener("load", playground, false);
+
+
+			function playground(){
+				var playgroundCvs = document.getElementById("playground");
+				var playgroundCtx = playgroundCvs.getContext("2d");
+
+				var centerx = playgroundCvs.width/2;
+				var centery = playgroundCvs.height/2; 
+				var showName = true;
+				var mouseIsDown = false;
+				var objectsExists = false;
+				var mouseIsUp = true;
+
+				//
+				//Event triggers
+				//
+				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
+				document.getElementById("makeObj").addEventListener("click", makeObj, false);
+
+				playgroundCvs.onmousedown = function(e){
+					mouseIsDown = true;
+					for (o in objects){
+
+						if(object[o].clicked(e)){
+							objects.target = objects[o];
+						}
+					}
+				}
+
+				playgroundCvs.onmousemove = function(e){
+					mousex = e.layerX;
+					mousey = e.layerY;
+					if(mouseIsDown){
+						things.balls.target.x = mousex;
+						things.balls.target.y = mousey;
+					}
+					drawscreen();
+				}
+				playgroundCvs.onmouseup = function (e){
+					mouseIsDown = false;
+				}
+
+				//
+				//End of event triggers
+				//
+
+				var objects = [];
+
+				var obj = {
+					id : 0,
+					name : {
+							text 			: "your text",
+							fontSize 		: "50",
+							fontFace 		: "serif",
+							textFillColor 	: "ff0000",
+							textAlpha		: 1,
+							shadowX 		: 1,
+							shadowY			: 1,
+							shadowBlur		: 1,
+							shadowColor		: "#707070",
+							textBaseline 	: "middle",
+							textAlign 		: "center",
+							fillOrStroke 	: "fill",
+							fontWeight		: "normal",
+							fontStyle 		: "normal",
+							fillType 		: "colorFill",
+							textFillColor2 	: "#000000",
+					},
+					type 		:"circle",
+					xposition	: centerx,
+					yposition	: centery,
+					width		: 50,
+					height		: 50,
+					radius		: 25,
+					fillcolor  	: "green",
+					strokecolor : "orange",
+					fillorstroke: "fill",
+					// cvsctx: leftctx
+				};
+
+				console.log(obj);
+
+				draw();
+
+				function init(){
+
+				}
+
+				function draw(){
+					playgroundCtx.fillStyle = "#ff00ff";
+					playgroundCtx.fillRect(0, 0, 500, 500);
+
+					for(o in objects){
+						if( objects[o].type == "circle"){
+							console.log(objects[o]);
+							objects[o].draw();
+						}
+						if(objects[o].type == "rect"){
+							objects[o].draw();
+						}
+					}
+				}
+
+				function update(){
+					console.log(obj);
+					draw();
+				}
+
+
+				//
+				//Event Responses
+				//
+
+				function chooseObject(e){
+					obj.type = e.target.value;
+					update();
+				}
+
+				function makeObj(){
+					var found = false;
+					for (o in objects){
+						if (obj.id == objects[o].id){
+							found = true;
+							break;
+						}
+					}
+					if (found){
+						alert("the object already exists");
+					} 
+					else {
+						if(obj.type == "circle"){
+							objects.push(new circle(obj.id, obj.name, obj.type, obj.xposition, obj.yposition, obj.radius, obj.fillcolor, obj.strokecolor, obj.fillorstroke));
+						}
+						else if(obj.type == "rect"){
+							objects.push(new rect(obj.id, obj.name, obj.type, obj.xposition, obj.yposition, obj.width, obj.height, obj.fillcolor, obj.strokecolor, obj.fillorstroke));
+						}
+						obj.id++;
+					}
+
+
+					objectsExist = true;
+					update();
+				}
+
+				//
+				//End of event responses
+				//
+
+				//
+				//Constructors
+				//
+				function circle(i, n, t, x, y, r, fc, sc, fs){
+					this.id 			= i;
+					this.name  			= n;
+					this.type 			= t;
+					this.xposition		= x;
+					this.yposition		= y;
+					this.radius			= r;
+					this.fillcolor  	= fc;
+					this.strokecolor	= sc;
+					this.fillorstroke 	= fs;
+					this.draw 			= function (){
+						
+											playgroundCtx.beginPath();
+											playgroundCtx.arc(this.xposition, this.yposition, this.radius, (Math.PI/180)*0, (Math.PI/180)*360, false);	
+											console.log(this.xposition + " "+ this.yposition);	
+											
+											if (this.fillorstroke == "fill"){
+												playgroundCtx.fillStyle = this.fillcolor;
+												playgroundCtx.fill();
+											}
+											else if (this.fillorstroke == "stroke"){
+												playgroundCtx.strokeStyle = this.strokecolor;
+												playgroundCtx.stroke();
+											}
+											else if (this.fillorstroke == "both"){
+												playgroundCtx.fillStyle = this.fillcolor;
+												playgroundCtx.fill();
+												playgroundCtx.strokeStyle = this.strokecolor;
+												playgroundCtx.stroke();
+											}
+											playgroundCtx.closePath();
+
+										};
+					this.clicked		= function(e){
+										mousex = e.layerX;
+										mousey = e.layerY;
+										a = mousex;
+										b = mousey;
+										c = this.xposiiton;
+										d = this.yposition;
+										r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
+										R = Math.pow(this.radius, 2);
+										if (r<=R){
+											return true;
+											break;
+										}
+										else {
+											return false;
+										}
+					}
+				}
+
+
+					for (o in objects){
+						if(object[i].clicked(e))
+
+						a = mousex;
+						b = mousey;
+						c = things.balls[i].x;
+						d = things.balls[i].y;
+						r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
+						R = Math.pow(things.balls[i].size, 2);
+						if (r<=R){
+							console.log("object hit " + things.balls[i].name);
+							things.balls.target = selectedObj = things.balls[i];
+							break;
+						}
+						else {
+							console.log("no object hit");
+						}
+										};
+				}		
+
+				function rect(i, n, t, x, y, w, h, fc, sc, fs){
+					this.id 			= i;
+					this.name  			= n;
+					this.type 			= t;
+					this.xposition		= x;
+					this.yposition		= y;
+					this.width 			= w;
+					this.height			= h;
+					this.fillcolor  	= fc;
+					this.strokecolor	= sc;
+					this.fillorstroke 	= fs;
+					this.draw 			= function(){
+								                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+											
+											if (this.fillorstroke == "fill"){
+												playgroundCtx.fillStyle = this.fillcolor;
+												playgroundCtx.fill();
+											}
+											else if (this.fillorstroke == "stroke"){
+												playgroundCtx.strokeStyle = this.strokecolor;
+												playgroundCtx.stroke();
+											}
+											else if (this.fillorstroke == "both"){
+												playgroundCtx.fillStyle = this.fillcolor;
+												playgroundCtx.fill();
+												playgroundCtx.strokeStyle = this.strokecolor;
+												playgroundCtx.stroke();
+											}
+
+											playgroundCtx.fillRect(this.xposition, this.yposition, this.width, this.height);
+											};
+					this.clicked		= function(e){
+
+										};
+				}
+				//
+				//End of contructors
+				//
+
+			}
+
+		</script>
+
+</head>
+
+	<body>
+
+		<h1>Javascript Playground!!</h1>
+
+		<p id="demo">My First Paragraph</p>
+		<button onclick="awesomeness()"> Change the paragraph!</button>
+		<br><br>
+
+		<div class="container-fluid">
+			<div class="row">
+				
+				<div class="col-lg-6 col-md-6 col-sm-6">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							Object Selector
+						</div>
+						<div class="panel-body">
+							You made too many!
+							<div id="objGroup">
+								<div class="btn-toolbar" id="ballbtns">
+
+								</div>
+								<div class="btn-toolbar" id="boxbtns">
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Hopscotch
+						</div>
+						<div class="panel-body">
+						<a href="hopscotch.html">Play hopscotch?</a>
+						</div>
+					</div>				
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Make an object!
+						</div>
+						<div class="panel-body">
+							<p>
+								Make an object and modify that its objects properties. 
+							</p>
+							<br> Which Object?
+							<select id="objectSelection">
+								<option value="circle">circle</option>
+								<option value="rect">rect</option>
+							</select>
+							<br>
+
+							<div class="btn btn-default" id="makeObj">
+								Make it!
+							</div>
+							<br>  
+							
+							<div class="btn btn-success" id="nameObj">Name IT!</div><input type="text" id="objname" placeholder="ballicious">
+
+							<br>
+							Positon: 
+							<br>X:<input type="text" id="objx" placeholder= "250">  
+							<br>Y:<input type="text" id="objy" placeholder= "250">
+							<br>
+							<input type="radio" name="positionMode" value="manual" checked>Manual entry
+							<input type="radio" name="positionMode" value="click">Click to position
+							<br>
+							<span id="radiusChange">
+							Bigger or Smaller!<br>
+							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
+							</span>
+							<br>
+							Fill or Stroke or both?
+							<select id="fillorstroke">
+								<option value = "fill">Fill</option>
+								<option value = "stroke">Stroke</option>
+								<option value = "both">Both</option>
+							</select>
+							<br>
+							Choose fill color: <input class="color" id="fillcolor" value="000000">
+							<br>
+							Choose stroke color: <input class="color" id="strokeColor" value="000000">
+						</div>
+					</div>
+				</div>
+					<div class="col-lg-6 col-md-6 col-sm-6">
+						<canvas id="playground" width="500" height="500">
+							Canvas
+						</canvas>
+					</div>
+
+					<div class="col-lg-3 col-md-3 col-sm-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+						Object Info
+						</div>
+						<div class="panel-body">
+	 						<div id="objGroup">
+								Name:<div id="info-name"></div><br>
+								Type:<div id="info-type"></div><br>
+								X:<div id="info-x"></div><br>
+								Y:<div id="info-y"></div><br>
+								Size:<div id="info-size"></div><br>
+	 						</div>
+	 					</div>
+					</div>				
+				</div>
+
+					</div>
+			</div>
+
+
+		</div>
+
+	</body>
+</html>
