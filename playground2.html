@@ -54,38 +54,17 @@ then Object info displaying
 				var objectsExists = false;
 				var mouseIsUp = true;
 
-				//
+				//******************************************************************************************
 				//Event triggers
-				//
+				//******************************************************************************************
 				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
 				document.getElementById("makeObj").addEventListener("click", makeObj, false);
 
-				playgroundCvs.onmousedown = function(e){
-					mouseIsDown = true;
-					for (o in objects){
+				
 
-						if(object[o].clicked(e)){
-							objects.target = objects[o];
-						}
-					}
-				}
-
-				playgroundCvs.onmousemove = function(e){
-					mousex = e.layerX;
-					mousey = e.layerY;
-					if(mouseIsDown){
-						things.balls.target.x = mousex;
-						things.balls.target.y = mousey;
-					}
-					drawscreen();
-				}
-				playgroundCvs.onmouseup = function (e){
-					mouseIsDown = false;
-				}
-
-				//
+				//******************************************************************************************
 				//End of event triggers
-				//
+				//******************************************************************************************
 
 				var objects = [];
 
@@ -121,12 +100,36 @@ then Object info displaying
 					// cvsctx: leftctx
 				};
 
-				console.log(obj);
+				
 
-				draw();
+				init();
 
 				function init(){
 
+					playgroundCvs.onmousedown = function(e){
+						mouseIsDown = true;
+						for (o in objects){
+
+							if(objects[o].clicked(e)){
+								objects.target = objects[o];
+							}
+						}
+					}
+
+					playgroundCvs.onmousemove = function(e){
+
+						if (mouseIsDown){
+							
+							objects.target.xposition = e.layerX;
+							objects.target.yposition = e.layerY;
+
+						}
+					}
+					playgroundCvs.onmouseup = function (e){
+						mouseIsDown = false;
+					}
+
+					setInterval(update,30);
 				}
 
 				function draw(){
@@ -135,7 +138,6 @@ then Object info displaying
 
 					for(o in objects){
 						if( objects[o].type == "circle"){
-							console.log(objects[o]);
 							objects[o].draw();
 						}
 						if(objects[o].type == "rect"){
@@ -145,14 +147,13 @@ then Object info displaying
 				}
 
 				function update(){
-					console.log(obj);
 					draw();
 				}
 
 
-				//
+				//******************************************************************************************
 				//Event Responses
-				//
+				//******************************************************************************************
 
 				function chooseObject(e){
 					obj.type = e.target.value;
@@ -185,13 +186,13 @@ then Object info displaying
 					update();
 				}
 
-				//
+				//******************************************************************************************
 				//End of event responses
-				//
+				//******************************************************************************************
 
-				//
+				//******************************************************************************************
 				//Constructors
-				//
+				//******************************************************************************************
 				function circle(i, n, t, x, y, r, fc, sc, fs){
 					this.id 			= i;
 					this.name  			= n;
@@ -206,7 +207,7 @@ then Object info displaying
 						
 											playgroundCtx.beginPath();
 											playgroundCtx.arc(this.xposition, this.yposition, this.radius, (Math.PI/180)*0, (Math.PI/180)*360, false);	
-											console.log(this.xposition + " "+ this.yposition);	
+												
 											
 											if (this.fillorstroke == "fill"){
 												playgroundCtx.fillStyle = this.fillcolor;
@@ -224,46 +225,24 @@ then Object info displaying
 											}
 											playgroundCtx.closePath();
 
-										};
+					};
 					this.clicked		= function(e){
-										mousex = e.layerX;
-										mousey = e.layerY;
-										a = mousex;
-										b = mousey;
-										c = this.xposiiton;
+										a = e.layerX;
+										b = e.layerY;
+										c = this.xposition;
 										d = this.yposition;
 										r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
 										R = Math.pow(this.radius, 2);
 										if (r<=R){
 											return true;
-											break;
 										}
 										else {
 											return false;
 										}
-					}
+					};
 				}
 
-
-					for (o in objects){
-						if(object[i].clicked(e))
-
-						a = mousex;
-						b = mousey;
-						c = things.balls[i].x;
-						d = things.balls[i].y;
-						r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
-						R = Math.pow(things.balls[i].size, 2);
-						if (r<=R){
-							console.log("object hit " + things.balls[i].name);
-							things.balls.target = selectedObj = things.balls[i];
-							break;
-						}
-						else {
-							console.log("no object hit");
-						}
-										};
-				}		
+						
 
 				function rect(i, n, t, x, y, w, h, fc, sc, fs){
 					this.id 			= i;
@@ -298,14 +277,46 @@ then Object info displaying
 											};
 					this.clicked		= function(e){
 
+											// get the point 
+											// calculate the sum  of the four triangles 
+											// check if sum is equal to the rectangles area
+
+											P = {
+												x : e.layerX,
+												y : e.layerY
+											};
+
+											A = {
+												x: this.xposition,
+												y: this.yposition
+											};
+											B = {
+												x: this.xposition + this.width,
+												y: this.yposition
+											};
+											C = {
+												x: this.xposition + this.width,
+												y: this.yposition + this.height
+											};
+											D = {
+												x: this.xposition,
+												y: this.yposition + this.height
+											};
+
+											rectArea = 0.5* ( ( (A.y - C.y)*(D.x-B.x) ) + ( (B.y-D.y)*(A.x-C.x) ) );
+
+											
+
+											triSum = APD + DPC + CPB + PBA
+
 										};
 				}
-				//
+				//******************************************************************************************
 				//End of contructors
-				//
+				//******************************************************************************************
 
 			}
-
+		
 		</script>
 
 </head>
