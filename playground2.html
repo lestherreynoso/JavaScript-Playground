@@ -14,6 +14,12 @@ then Object info displaying
 <br>
 <br>IMPORTANT NOTE RECTANGLES/SQUARES ARE DRAWN FROM THE TOP LEFT CORNER BY DEFAULT**
 <br>
+the object.target points to the object in the array, defining it as undefined when the mouse is up changed the object in the array. 
+
+
+
+
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -32,7 +38,7 @@ then Object info displaying
 		
         <style>
         body{
-        	background-color: yellow;
+        	background-color: cyan;
         }
         </style>
 
@@ -94,7 +100,7 @@ then Object info displaying
 					width		: 50,
 					height		: 50,
 					radius		: 25,
-					fillcolor  	: "green",
+					fillcolor  	: "black",
 					strokecolor : "orange",
 					fillorstroke: "fill",
 					// cvsctx: leftctx
@@ -105,6 +111,11 @@ then Object info displaying
 				init();
 
 				function init(){
+
+					playgroundCvs.onmouseup = function (e){
+						mouseIsDown = false;
+						// objects.target = undefined;
+					}
 
 					playgroundCvs.onmousedown = function(e){
 						mouseIsDown = true;
@@ -125,15 +136,12 @@ then Object info displaying
 
 						}
 					}
-					playgroundCvs.onmouseup = function (e){
-						mouseIsDown = false;
-					}
-
+					
 					setInterval(update,30);
 				}
 
 				function draw(){
-					playgroundCtx.fillStyle = "#ff00ff";
+					playgroundCtx.fillStyle = "#ffffff";
 					playgroundCtx.fillRect(0, 0, 500, 500);
 
 					for(o in objects){
@@ -290,24 +298,42 @@ then Object info displaying
 												x: this.xposition,
 												y: this.yposition
 											};
+
 											B = {
 												x: this.xposition + this.width,
 												y: this.yposition
 											};
+
 											C = {
 												x: this.xposition + this.width,
 												y: this.yposition + this.height
 											};
+
 											D = {
 												x: this.xposition,
 												y: this.yposition + this.height
 											};
 
-											rectArea = 0.5* ( ( (A.y - C.y)*(D.x-B.x) ) + ( (B.y-D.y)*(A.x-C.x) ) );
+											rectArea = 0.5 * ( ( (A.y - C.y)*(D.x-B.x) ) + ( (B.y-D.y)*(A.x-C.x) ) );
 
-											
+											APD = 0.5 * ((A.x * (P.y - D.y)) + (P.x * ( D.y - A.y )) + (D.x * ( A.y - P.y )));
+											DPC = 0.5 * ((D.x * (P.y - C.y)) + (P.x * ( C.y - D.y )) + (C.x * ( D.y - P.y )));
+											CPB = 0.5 * ((C.x * (P.y - B.y)) + (P.x * ( B.y - C.y )) + (B.x * ( C.y - P.y )));
+											PBA = 0.5 * ((P.x * (B.y - A.y)) + (B.x * ( A.y - P.y )) + (A.x * ( P.y - B.y )));
 
-											triSum = APD + DPC + CPB + PBA
+											triSum = APD + DPC + CPB + PBA;
+
+											if (triSum > rectArea){
+												return false;
+											} else if (triSum < rectArea){
+												if (APD == 0 || DPC == 0 || CPB == 0 || PBA == 0){
+													//point is ON the rectangle not IN the rectangle
+													return true;
+												} else {
+													//point is IN the rectangle not ON it
+													return true;
+												}
+											}
 
 										};
 				}
