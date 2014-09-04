@@ -73,8 +73,8 @@ the object.target points to the object in the array, defining it as undefined wh
 				//******************************************************************************************
 
 				var objects = [];
-
-				var obj = {
+				var obj = {};
+				var defObj = {
 					id : 0,
 					name : {
 							text 			: "your text",
@@ -138,6 +138,7 @@ the object.target points to the object in the array, defining it as undefined wh
 					}
 					
 					setInterval(update,30);
+					
 				}
 
 				function draw(){
@@ -155,7 +156,26 @@ the object.target points to the object in the array, defining it as undefined wh
 				}
 
 				function update(){
+					
 					draw();
+				}
+
+				function showObject(){
+					info = document.getElementById("objInfo");
+					var selected = "";
+					// for (var o in objects){
+						for (var key in obj){
+							if (key === function(){} || key == "name"){
+								continue;
+							}
+						selected += "<strong>" + key + "</strong>" + ": " + obj[key]+ ";<br>\n";
+						// console.log(o, objects[o]);
+						// console.log(objects[o].toSource());
+						}
+					// }
+					console.log(selected);
+					info.innerHTML = selected;
+
 				}
 
 
@@ -189,7 +209,7 @@ the object.target points to the object in the array, defining it as undefined wh
 						obj.id++;
 					}
 
-
+					showObject();
 					objectsExist = true;
 					update();
 				}
@@ -413,15 +433,6 @@ the object.target points to the object in the array, defining it as undefined wh
 							<br>  
 							
 							<div class="btn btn-success" id="nameObj">Name IT!</div><input type="text" id="objname" placeholder="ballicious">
-
-							<br>
-							Positon: 
-							<br>X:<input type="text" id="objx" placeholder= "250">  
-							<br>Y:<input type="text" id="objy" placeholder= "250">
-							<br>
-							<input type="radio" name="positionMode" value="manual" checked>Manual entry
-							<input type="radio" name="positionMode" value="click">Click to position
-							<br>
 							<span id="radiusChange">
 							Bigger or Smaller!<br>
 							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
@@ -452,12 +463,8 @@ the object.target points to the object in the array, defining it as undefined wh
 						Object Info
 						</div>
 						<div class="panel-body">
-	 						<div id="objGroup">
-								Name:<div id="info-name"></div><br>
-								Type:<div id="info-type"></div><br>
-								X:<div id="info-x"></div><br>
-								Y:<div id="info-y"></div><br>
-								Size:<div id="info-size"></div><br>
+	 						<div id="objInfo">
+								
 	 						</div>
 	 					</div>
 					</div>				
