@@ -46,7 +46,11 @@ the object.target points to the object in the array, defining it as undefined wh
         }
         </style>
 
-
+        <script>
+	        $(document).ready(function(){
+		  		$("#canvasproperties").hide();				
+			});
+        </script>
 
 
 		<script>
@@ -63,6 +67,9 @@ the object.target points to the object in the array, defining it as undefined wh
 				var mouseIsDown = false;
 				var objectsExists = false;
 				var mouseIsUp = true;
+				var canvasbackground = "#ffffff";
+				cw = 500;
+				ch = 500;
 
 				//******************************************************************************************
 				//Event triggers
@@ -71,10 +78,13 @@ the object.target points to the object in the array, defining it as undefined wh
 				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
 				document.getElementById("radiusChange").addEventListener("change", setRadius, false);
 				document.getElementById("fillorstroke").addEventListener("change", setFillorstroke, false);
-				document.getElementById("strokewidth").addEventListener("change", setStrokeWidth, false);
+				document.getElementById("strokewidthchange").addEventListener("change", setStrokeWidth, false);
 				document.getElementById("fillcolor").addEventListener("change", setFillColor, false);
 				document.getElementById("strokecolor").addEventListener("change", setStrokeColor, false);
 				document.getElementById("makeObj").addEventListener("click", makeObj, false);
+				document.getElementById("canvascolor").addEventListener("change", setCanvasColor, false);
+				document.getElementById("canvasheight").addEventListener("change", setCanvasHeight, false);
+				document.getElementById("canvaswidth").addEventListener("change", setCanvasWidth, false);
 		
 
 				//******************************************************************************************
@@ -151,8 +161,8 @@ the object.target points to the object in the array, defining it as undefined wh
 				}
 
 				function draw(){
-					playgroundCtx.fillStyle = "#ffffff";
-					playgroundCtx.fillRect(0, 0, 500, 500);
+					playgroundCtx.fillStyle = canvasbackground;
+					playgroundCtx.fillRect(0, 0, cw, ch);
 
 					for(o in objects){
 						if( objects[o].type == "circle"){
@@ -184,6 +194,15 @@ the object.target points to the object in the array, defining it as undefined wh
 					info.innerHTML = selected;
 
 				}
+
+				function updateProperties(){
+					document.getElementById("objectSelection").value = obj.type;
+					document.getElementById("radius").value  = obj.radius;
+					document.getElementById("fillorstroke").value = obj.fillorstroke;
+					document.getElementById("fillcolor").value = obj.fillcolor;
+					document.getElementById("strokecolor").value = obj.strokecolor;
+					document.getElementById("strokewidth").value = obj.strokewidth;
+				} 
 
 
 				//******************************************************************************************
@@ -248,10 +267,28 @@ the object.target points to the object in the array, defining it as undefined wh
 				}
 
 				function setPropertiesOf(e){
-					console.log(e.target.value);
+					if (e.target.value == "canvas"){
+						$("#objectproperties").hide();
+						$("#canvasproperties").fadeIn();
+					}
+					if (e.target.value == "object"){
+						$("#canvasproperties").hide();
+						$("#objectproperties").fadeIn();
+					}
 				}
 
+				function setCanvasColor(e){
+					canvasbackground = "#" + e.target.value;
+					update();
+				}
 
+				function setCanvasHeight(e){
+					playgroundCvs.height = ch = e.target.value;
+				}
+
+				function setCanvasWidth(e){
+					playgroundCvs.width = cw = e.target.value;
+				}
 				//******************************************************************************************
 				//End of event responses
 				//******************************************************************************************
@@ -302,6 +339,7 @@ the object.target points to the object in the array, defining it as undefined wh
 										R = Math.pow(this.radius, 2);
 										if (r<=R){
 											obj = objects[this.id];
+											updateProperties();
 											return true;
 										}
 										else {
@@ -392,6 +430,7 @@ the object.target points to the object in the array, defining it as undefined wh
 												if (APD == 0 || DPC == 0 || CPB == 0 || PBA == 0){
 													//point is ON the rectangle not IN the rectangle
 													obj = objects[this.id];
+													updateProperties();
 													return true;
 												} else {
 													//point is IN the rectangle not ON it
@@ -467,44 +506,56 @@ the object.target points to the object in the array, defining it as undefined wh
 								<input type="radio" name="propertiesOf" value="object" checked>Object
 								<input type="radio" name="propertiesOf" value="canvas">Canvas
 							</div>
-							<br> Which Object?
-							<select id="objectSelection">
-								<option value="circle">circle</option>
-								<option value="rect">rect</option>
-							</select>
-							<br>
+							<div id="objectproperties">
+								<br> Which Object?
+								<select id="objectSelection">
+									<option value="circle">circle</option>
+									<option value="rect">rect</option>
+								</select>
+								<br>
 
-							
+								
 
-							<br>  
-							
-							Name: <input type="text" id="objname" placeholder="ballicious"><br>
-							<span id="radiusChange">
-								Radius: <br><input type="range" id="radius" min="0" max="300" step="1" value="25" />
-							</span>
-							<br>
-							Fill or Stroke or both?
-							<select id="fillorstroke">
-								<option value = "fill">Fill</option>
-								<option value = "stroke">Stroke</option>
-								<option value = "both">Both</option>
-							</select>
-							<br>
-							Choose fill color: <input class="color" id="fillcolor" value="000000">
-							<br>
-							Choose stroke color: <input class="color" id="strokecolor" value="000000">
-							<br>
-							<span id="strokewidth">
-								Stroke Width: <br><input type="range" id="strokewidth" min="0" max="50" step="1" value="5" />
-							</span>
+								<br>  
+								
+								Name: <input type="text" id="objname" placeholder="ballicious"><br>
+								<span id="radiusChange">
+									Radius: <br><input type="range" id="radius" min="0" max="300" step="1" value="25" />
+								</span>
+								<br>
+								Fill or Stroke or both?
+								<select id="fillorstroke">
+									<option value = "fill">Fill</option>
+									<option value = "stroke">Stroke</option>
+									<option value = "both">Both</option>
+								</select>
+								<br>
+								Choose fill color: <input class="color" id="fillcolor" value="000000">
+								<br>
+								Choose stroke color: <input class="color" id="strokecolor" value="000000">
+								<br>
+								<span id="strokewidthchange">
+									Stroke Width: <br><input type="range" id="strokewidth" min="0" max="50" step="1" value="5" />
+								</span>
 
-							<br><br>
-							<div class="btn btn-default" id="makeObj" style="float:right">Make it!</div>
+								<br><br>
+								<div class="btn btn-default" id="makeObj" style="float:right">Make it!</div>
+							</div>
+							<div id="canvasproperties">
+								Canvas Color:  <input class="color" id="canvascolor" value="ffffff"><br>
+								Canvas Width:  <input type="range" id="canvaswidth" min="0" max="1000" step="1" value="500"/>
+							 	<br>      
+							  
+							 	Canvas Height:
+							  	<input type="range" id="canvasheight" min="0" max="1000" step="1" value="500"/>
+							  	<br>
+
+							</div>
 						</div>
 					</div>
 				</div>
 					<div class="col-lg-6 col-md-6 col-sm-6">
-						<canvas id="playground" width="500" height="500">
+						<canvas id="playground" height="500" width="500">
 							Canvas
 						</canvas>
 					</div>
