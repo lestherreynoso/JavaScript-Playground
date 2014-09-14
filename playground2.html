@@ -40,6 +40,10 @@ the object.target points to the object in the array, defining it as undefined wh
         body{
         	background-color: cyan;
         }
+        .panel, .panel-heading {
+        	background-color: black;
+        	opacity: .5;
+        }
         </style>
 
 
@@ -63,10 +67,15 @@ the object.target points to the object in the array, defining it as undefined wh
 				//******************************************************************************************
 				//Event triggers
 				//******************************************************************************************
+				document.getElementById("propertiesOf").addEventListener("change", setPropertiesOf, false);
 				document.getElementById("objectSelection").addEventListener("change", chooseObject, false);
+				document.getElementById("radiusChange").addEventListener("change", setRadius, false);
+				document.getElementById("fillorstroke").addEventListener("change", setFillorstroke, false);
+				document.getElementById("strokewidth").addEventListener("change", setStrokeWidth, false);
+				document.getElementById("fillcolor").addEventListener("change", setFillColor, false);
+				document.getElementById("strokecolor").addEventListener("change", setStrokeColor, false);
 				document.getElementById("makeObj").addEventListener("click", makeObj, false);
-
-				
+		
 
 				//******************************************************************************************
 				//End of event triggers
@@ -103,7 +112,7 @@ the object.target points to the object in the array, defining it as undefined wh
 					fillcolor  	: "black",
 					strokecolor : "orange",
 					fillorstroke: "fill",
-					// cvsctx: leftctx
+					strokewidth	: 5
 				};
 
 				
@@ -156,24 +165,22 @@ the object.target points to the object in the array, defining it as undefined wh
 				}
 
 				function update(){
-					
+					if (objectsExists){
+						showObject();
+					}
 					draw();
 				}
 
 				function showObject(){
 					info = document.getElementById("objInfo");
 					var selected = "";
-					// for (var o in objects){
-						for (var key in obj){
-							if (key === function(){} || key == "name"){
-								continue;
-							}
-						selected += "<strong>" + key + "</strong>" + ": " + obj[key]+ ";<br>\n";
-						// console.log(o, objects[o]);
-						// console.log(objects[o].toSource());
+					for (var key in obj){
+						if (key == "draw" || key == "clicked" || key == "name"){
+							continue;
 						}
-					// }
-					console.log(selected);
+					selected += "<strong>" + key + "</strong>" + ": " + obj[key]+ ";<br>";
+					}
+					
 					info.innerHTML = selected;
 
 				}
@@ -184,14 +191,14 @@ the object.target points to the object in the array, defining it as undefined wh
 				//******************************************************************************************
 
 				function chooseObject(e){
-					obj.type = e.target.value;
+					defObj.type = e.target.value;
 					update();
 				}
 
 				function makeObj(){
 					var found = false;
 					for (o in objects){
-						if (obj.id == objects[o].id){
+						if (defObj.id == objects[o].id){
 							found = true;
 							break;
 						}
@@ -200,19 +207,50 @@ the object.target points to the object in the array, defining it as undefined wh
 						alert("the object already exists");
 					} 
 					else {
-						if(obj.type == "circle"){
-							objects.push(new circle(obj.id, obj.name, obj.type, obj.xposition, obj.yposition, obj.radius, obj.fillcolor, obj.strokecolor, obj.fillorstroke));
+						if(defObj.type == "circle"){
+							objects.push(new circle(defObj.id, defObj.name, defObj.type, defObj.xposition, defObj.yposition, defObj.radius, defObj.fillcolor, defObj.strokecolor, defObj.fillorstroke, defObj.strokewidth));
 						}
-						else if(obj.type == "rect"){
-							objects.push(new rect(obj.id, obj.name, obj.type, obj.xposition, obj.yposition, obj.width, obj.height, obj.fillcolor, obj.strokecolor, obj.fillorstroke));
+						else if(defObj.type == "rect"){
+							objects.push(new rect(defObj.id, defObj.name, defObj.type, defObj.xposition, defObj.yposition, defObj.width, defObj.height, defObj.fillcolor, defObj.strokecolor, defObj.fillorstroke, defObj.strokewidth));
 						}
-						obj.id++;
+						obj = objects[defObj.id]
+						defObj.id++;
 					}
 
-					showObject();
-					objectsExist = true;
+
+					
+					objectsExists = true;
 					update();
 				}
+
+				function setFillorstroke(e){
+					obj.fillorstroke = e.target.value;
+					update();
+				}
+
+				function setStrokeWidth(e){
+					obj.strokewidth = e.target.value;
+				}
+
+				function setRadius(e){
+					obj.radius = e.target.value;
+					update();
+				}
+
+				function setFillColor(e){
+					obj.fillcolor = "#" + e.target.value;
+					update();
+				}
+
+				function setStrokeColor(e){
+					obj.strokecolor = "#" + e.target.value;
+					update();
+				}
+
+				function setPropertiesOf(e){
+					console.log(e.target.value);
+				}
+
 
 				//******************************************************************************************
 				//End of event responses
@@ -221,7 +259,7 @@ the object.target points to the object in the array, defining it as undefined wh
 				//******************************************************************************************
 				//Constructors
 				//******************************************************************************************
-				function circle(i, n, t, x, y, r, fc, sc, fs){
+				function circle(i, n, t, x, y, r, fc, sc, fs, sw){
 					this.id 			= i;
 					this.name  			= n;
 					this.type 			= t;
@@ -231,11 +269,12 @@ the object.target points to the object in the array, defining it as undefined wh
 					this.fillcolor  	= fc;
 					this.strokecolor	= sc;
 					this.fillorstroke 	= fs;
+					this.strokewidth	= sw;
 					this.draw 			= function (){
 						
 											playgroundCtx.beginPath();
 											playgroundCtx.arc(this.xposition, this.yposition, this.radius, (Math.PI/180)*0, (Math.PI/180)*360, false);	
-												
+											playgroundCtx.lineWidth = this.strokewidth;
 											
 											if (this.fillorstroke == "fill"){
 												playgroundCtx.fillStyle = this.fillcolor;
@@ -262,17 +301,19 @@ the object.target points to the object in the array, defining it as undefined wh
 										r = Math.pow(a-c, 2) + Math.pow(b-d, 2);
 										R = Math.pow(this.radius, 2);
 										if (r<=R){
+											obj = objects[this.id];
 											return true;
 										}
 										else {
 											return false;
 										}
+
 					};
 				}
 
 						
 
-				function rect(i, n, t, x, y, w, h, fc, sc, fs){
+				function rect(i, n, t, x, y, w, h, fc, sc, fs, sw){
 					this.id 			= i;
 					this.name  			= n;
 					this.type 			= t;
@@ -283,9 +324,10 @@ the object.target points to the object in the array, defining it as undefined wh
 					this.fillcolor  	= fc;
 					this.strokecolor	= sc;
 					this.fillorstroke 	= fs;
+					this.strokewidth	= sw;
 					this.draw 			= function(){
 								                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-											
+											// playgroundCtx.lineWidth = this.strokewidth;
 											if (this.fillorstroke == "fill"){
 												playgroundCtx.fillStyle = this.fillcolor;
 												playgroundCtx.fill();
@@ -302,6 +344,7 @@ the object.target points to the object in the array, defining it as undefined wh
 											}
 
 											playgroundCtx.fillRect(this.xposition, this.yposition, this.width, this.height);
+
 											};
 					this.clicked		= function(e){
 
@@ -348,6 +391,7 @@ the object.target points to the object in the array, defining it as undefined wh
 											} else if (triSum < rectArea){
 												if (APD == 0 || DPC == 0 || CPB == 0 || PBA == 0){
 													//point is ON the rectangle not IN the rectangle
+													obj = objects[this.id];
 													return true;
 												} else {
 													//point is IN the rectangle not ON it
@@ -417,9 +461,12 @@ the object.target points to the object in the array, defining it as undefined wh
 						Make an object!
 						</div>
 						<div class="panel-body">
-							<p>
-								Make an object and modify that its objects properties. 
-							</p>
+							Which properties would you like to modify?<br>
+
+							<div id="propertiesOf">
+								<input type="radio" name="propertiesOf" value="object" checked>Object
+								<input type="radio" name="propertiesOf" value="canvas">Canvas
+							</div>
 							<br> Which Object?
 							<select id="objectSelection">
 								<option value="circle">circle</option>
@@ -427,15 +474,13 @@ the object.target points to the object in the array, defining it as undefined wh
 							</select>
 							<br>
 
-							<div class="btn btn-default" id="makeObj">
-								Make it!
-							</div>
+							
+
 							<br>  
 							
-							<div class="btn btn-success" id="nameObj">Name IT!</div><input type="text" id="objname" placeholder="ballicious">
+							Name: <input type="text" id="objname" placeholder="ballicious"><br>
 							<span id="radiusChange">
-							Bigger or Smaller!<br>
-							<input type="range" id="radius" min="0" max="300" step="1" value="25" />
+								Radius: <br><input type="range" id="radius" min="0" max="300" step="1" value="25" />
 							</span>
 							<br>
 							Fill or Stroke or both?
@@ -447,7 +492,14 @@ the object.target points to the object in the array, defining it as undefined wh
 							<br>
 							Choose fill color: <input class="color" id="fillcolor" value="000000">
 							<br>
-							Choose stroke color: <input class="color" id="strokeColor" value="000000">
+							Choose stroke color: <input class="color" id="strokecolor" value="000000">
+							<br>
+							<span id="strokewidth">
+								Stroke Width: <br><input type="range" id="strokewidth" min="0" max="50" step="1" value="5" />
+							</span>
+
+							<br><br>
+							<div class="btn btn-default" id="makeObj" style="float:right">Make it!</div>
 						</div>
 					</div>
 				</div>
