@@ -1,24 +1,6 @@
-<br>This is going to be structured. 
-<br>
-<br>What do i need/want?
-<br>
-<br>global object representing selected object. 
-<br>modifyable attributes, each attribute globably set to the selected object. 
-<br>all attributes saved to selected object in an array of objects. 
-<br>List of modifyable attributes for the objects 
-<br>
-<br>Object creation completed, successfully created stored and drawn. 
-<br>need to be able to choose selected object. lets start with click to select first
-
-then Object info displaying
-<br>
 <br>IMPORTANT NOTE RECTANGLES/SQUARES ARE DRAWN FROM THE TOP LEFT CORNER BY DEFAULT**
 <br>
 the object.target points to the object in the array, defining it as undefined when the mouse is up changed the object in the array. 
-
-
-
-
 
 <!DOCTYPE html>
 <html>
@@ -48,7 +30,31 @@ the object.target points to the object in the array, defining it as undefined wh
 
         <script>
 	        $(document).ready(function(){
-		  		$("#canvasproperties").hide();				
+		  		$("#canvasproperties").hide();
+		  		$("#animdiv").hide();
+		  		$("#3ddiv").hide();
+
+		  		$("#creation").click(function(){
+		  			$("ul li").removeClass("active")
+		  			$(this).addClass("active")
+		  			$("#animdiv").hide()
+		  			$("#3ddiv").hide()
+		  			$("#creationdiv").fadeIn()
+		  		});
+		  		$("#anim").click(function(){
+		  			$("ul li").removeClass("active")
+		  			$(this).addClass("active")
+		  			$("#animdiv").fadeIn()
+		  			$("#3ddiv").hide()
+		  			$("#creationdiv").hide()
+		  		});
+		  		$("#3d").click(function(){
+		  			$("ul li").removeClass("active")
+		  			$(this).addClass("active")
+		  			$("#3ddiv").fadeIn()
+		  			$("#animdiv").hide()
+		  			$("#creationdiv").hide()
+		  		});
 			});
         </script>
 
@@ -68,7 +74,7 @@ the object.target points to the object in the array, defining it as undefined wh
 				var objectsExists = false;
 				var mouseIsUp = true;
 				var canvasbackground = "#ffffff";
-				cw = 500;
+				cw = 700;
 				ch = 500;
 
 				//******************************************************************************************
@@ -451,51 +457,26 @@ the object.target points to the object in the array, defining it as undefined wh
 </head>
 
 	<body>
-
 		<h1>Javascript Playground!!</h1>
-
-		<p id="demo">My First Paragraph</p>
-		<button onclick="awesomeness()"> Change the paragraph!</button>
-		<br><br>
 
 		<div class="container-fluid">
 			<div class="row">
 				
-				<div class="col-lg-6 col-md-6 col-sm-6">
-					<div class="panel panel-danger">
-						<div class="panel-heading">
-							Object Selector
-						</div>
-						<div class="panel-body">
-							You made too many!
-							<div id="objGroup">
-								<div class="btn-toolbar" id="ballbtns">
+				<div class="col-lg-12 col-md-12 col-sm-12">
+					
+				<ul class="nav nav-tabs">
+					<li class="active" id="creation"><a href="#">Object Creation</a></li>
+					<li id="anim"><a href="#">Simple Animation</a></li>
+					<li id="3d"><a href="#">3d Canvas</a></li>
+				</ul>
 
-								</div>
-								<div class="btn-toolbar" id="boxbtns">
-
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-				
-				<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
-						<div class="panel-heading">
-						Hopscotch
-						</div>
-						<div class="panel-body">
-						<a href="hopscotch.html">Play hopscotch?</a>
-						</div>
-					</div>				
 				</div>
 			</div>
-
+			<br>
+	<div id="creationdiv">
 			<div class="row">
 				<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
+					<div class="panel panel-default">
 						<div class="panel-heading">
 						Make an object!
 						</div>
@@ -513,8 +494,6 @@ the object.target points to the object in the array, defining it as undefined wh
 									<option value="rect">rect</option>
 								</select>
 								<br>
-
-								
 
 								<br>  
 								
@@ -555,13 +534,13 @@ the object.target points to the object in the array, defining it as undefined wh
 					</div>
 				</div>
 					<div class="col-lg-6 col-md-6 col-sm-6">
-						<canvas id="playground" height="500" width="500">
+						<canvas id="playground" height="500" width="700">
 							Canvas
 						</canvas>
 					</div>
 
 					<div class="col-lg-3 col-md-3 col-sm-3">
-					<div class="panel panel-danger">
+					<div class="panel panel-default">
 						<div class="panel-heading">
 						Object Info
 						</div>
@@ -573,11 +552,20 @@ the object.target points to the object in the array, defining it as undefined wh
 					</div>				
 				</div>
 
-					</div>
 			</div>
-
-
 		</div>
 
+	</div>
+	<div id="animdiv">
+	anim
+		<div class="col-lg-6 col-md-6 col-sm-6">
+			<canvas id="anim" height="500" width="500">
+				Canvas
+			</canvas>
+		</div>
+	</div>
+	<div id="3ddiv">
+	3d
+	</div> 
 	</body>
 </html>
